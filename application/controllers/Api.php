@@ -204,7 +204,6 @@ class Api extends RestController
             'qty' => (int)$this->post('qty')
         ];
 
-        // $dataProduct = ($dataProduct + $newData);
         array_push($dataProduct, $newData);
 
         $this->response([
@@ -235,12 +234,15 @@ class Api extends RestController
         ];
 
         $newData = [
-            'name' => 'Amoeba',
-            'qty' => 70
+            'id' => (int)$id,
+            'name' => $this->post('name'),
+            'qty' => (int)$this->post('qty')
         ];
 
+        $insert = array_push($dataProduct, $newData);
+
         if ($id) {
-            array_replace($dataProduct[$id], $newData);
+            array_replace($dataProduct[$id - 1], $insert);
             if (array_key_exists($id, $dataProduct)) {
                 $this->response([
                     'status' => true,
@@ -250,9 +252,14 @@ class Api extends RestController
             } else {
                 $this->response([
                     'status' => false,
-                    'message' => 'Provide an id'
+                    'message' => 'Failed to edit product'
                 ], 404);
             }
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Provide an id'
+            ], 404);
         }
     }
 }
